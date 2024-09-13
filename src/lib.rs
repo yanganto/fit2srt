@@ -1,5 +1,5 @@
-use chrono::{DateTime, Local, TimeDelta};
-use fitparser::{FitDataField, FitDataRecord, Value};
+use chrono::{DateTime, Local, TimeDelta, Timelike};
+use fitparser::Value;
 use std::collections::VecDeque;
 use std::fs::File;
 use std::path::Path;
@@ -7,9 +7,12 @@ use std::path::Path;
 type SrtString = String;
 
 pub struct SrtGenerator {
+    #[allow(dead_code)]
     field: &'static str,
     tick: f64,
     unit: Option<String>,
+    after_time_secs: u32,
+    before_time_secs: u32
 }
 
 impl Default for SrtGenerator {
@@ -18,12 +21,38 @@ impl Default for SrtGenerator {
             field: "depth",
             tick: 0.1,
             unit: Some("M".to_string()),
+            after_time_secs: 0,
+            before_time_secs: 0,
         }
     }
 }
 
 impl SrtGenerator {
-    fn open<P: AsRef<Path>>(
+    pub fn after_hour(&mut self, h: u32){
+        self.after_time_secs += h * 60 * 60;
+    }
+
+    pub fn after_minute(&mut self, m: u32){
+        self.after_time_secs += m * 60;
+    }
+
+    pub fn after_second(&mut self, s: u32){
+        self.after_time_secs += s;
+    }
+
+    pub fn before_hour(&mut self, h: u32){
+        self.before_time_secs += h * 60 * 60;
+    }
+
+    pub fn before_minute(&mut self, m: u32){
+        self.before_time_secs += m * 60;
+    }
+
+    pub fn before_second(&mut self, s: u32){
+        self.before_time_secs += s;
+    }
+
+    pub fn open<P: AsRef<Path>>(
         self,
         path: P,
     ) -> Result<SrtIter, Box<dyn std::error::Error + Sync + Send + 'static>> {
@@ -32,6 +61,7 @@ impl SrtGenerator {
         let mut previous_value = f64::NAN;
         let mut data = VecDeque::new();
         let mut unit = self.unit;
+        let mut before = true;
 
         for record in fitparser::from_reader(&mut fp)? {
             let mut timestamp: Option<DateTime<Local>> = None;
@@ -40,7 +70,19 @@ impl SrtGenerator {
             for field in record.fields() {
                 if field.name() == "timestamp" {
                     if let Value::Timestamp(ts) = field.value() {
-                        timestamp = Some(*ts);
+                        if before
+                            && self.after_time_secs >= ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second() {
+                                // TODO DEBUG print here
+                                // println!("skip {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                                continue;
+                            } else if self.before_time_secs > 0 && self.before_time_secs < ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second(){
+                                // TODO DEBUG print here
+                                // println!("skip record after {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                                break;
+                            } else {
+                                before = false;
+                                timestamp = Some(*ts);
+                            }
                     }
                 } else if field.name() == "depth" {
                     if let Value::Float64(v) = field.value() {
@@ -72,12 +114,12 @@ impl SrtGenerator {
         Ok(SrtIter {
             count: 0,
             data,
-            previous_time: start_time.unwrap() - start_time.unwrap(), // TODO
+            previous_time: TimeDelta::default(),
         })
     }
 }
 
-struct SrtIter {
+pub struct SrtIter {
     count: usize,
     data: VecDeque<(TimeDelta, String)>,
     previous_time: TimeDelta,
