@@ -1,0 +1,28 @@
+name: Test
+
+concurrency:
+  group: test-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test
+        run: |
+          nix develop -c cargo test
+          nix develop -c cargo run --features=std --example diff
+          nix develop -c cargo run --features=std --example json
+          nix develop -c cargo run --features=std --example rename-patch-struct
+          nix develop -c cargo run --features=std --example patch-attr
+          nix develop -c cargo run --features=std --example option
+          nix develop -c cargo test --features=std

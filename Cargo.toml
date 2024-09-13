@@ -1,0 +1,8 @@
+[package]
+name = "fit2srt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fitparser = "0.7.0"
+chrono = "0.4.28"
