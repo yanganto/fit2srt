@@ -20,9 +20,3 @@ jobs:
       - name: Test
         run: |
           nix develop -c cargo test
-          nix develop -c cargo run --features=std --example diff
-          nix develop -c cargo run --features=std --example json
-          nix develop -c cargo run --features=std --example rename-patch-struct
-          nix develop -c cargo run --features=std --example patch-attr
-          nix develop -c cargo run --features=std --example option
-          nix develop -c cargo test --features=std

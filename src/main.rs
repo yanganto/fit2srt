@@ -44,7 +44,7 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
 
         if !valid {
             // TODO
-            eprintln!("after invaild");
+            eprintln!("after invalid");
             return Ok(())
         }
     }
@@ -70,7 +70,7 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
 
         if !valid {
             // TODO
-            eprintln!("before invaild");
+            eprintln!("before invalid");
             return Ok(())
         }
     }
