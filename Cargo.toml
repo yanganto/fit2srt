@@ -7,3 +7,6 @@ edition = "2021"
 fitparser = "0.7.0"
 chrono = "0.4.28"
 clap = { version =  "4.5.17", features= ["derive"] }
+
+[dev-dependencies]
+test_bin = "0.4.0"
