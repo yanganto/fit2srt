@@ -9,6 +9,7 @@ fn with_help() {
         .starts_with(b"Usage: fit2srt [OPTIONS] <FIT_FILE>"));
 }
 
+
 #[test]
 fn without_option() {
     let output = test_bin::get_test_bin("fit2srt")
@@ -20,7 +21,8 @@ fn without_option() {
         .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.5M\n\n"));
 }
 
-#[test]
+// Run test in UTC timezone and in CI
+#[test_with::timezone(0)]
 fn with_before() {
     // The args only work for UTC timezone
     let output = test_bin::get_test_bin("fit2srt")
@@ -32,9 +34,9 @@ fn with_before() {
         .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.7M\n\n"));
 }
 
-#[test]
+// Run test in UTC timezone and in CI
+#[test_with::timezone(0)]
 fn with_time_slot() {
-    // The args only work for UTC timezone
     let output = test_bin::get_test_bin("fit2srt")
         .args(["-a", "03:10:00", "-b", "03:10:05", "asset/garmin_g1.fit"])
         .output()
