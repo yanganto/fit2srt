@@ -12,7 +12,7 @@ pub struct SrtGenerator {
     tick: f64,
     unit: Option<String>,
     after_time_secs: u32,
-    before_time_secs: u32
+    before_time_secs: u32,
 }
 
 impl Default for SrtGenerator {
@@ -28,27 +28,27 @@ impl Default for SrtGenerator {
 }
 
 impl SrtGenerator {
-    pub fn after_hour(&mut self, h: u32){
+    pub fn after_hour(&mut self, h: u32) {
         self.after_time_secs += h * 60 * 60;
     }
 
-    pub fn after_minute(&mut self, m: u32){
+    pub fn after_minute(&mut self, m: u32) {
         self.after_time_secs += m * 60;
     }
 
-    pub fn after_second(&mut self, s: u32){
+    pub fn after_second(&mut self, s: u32) {
         self.after_time_secs += s;
     }
 
-    pub fn before_hour(&mut self, h: u32){
+    pub fn before_hour(&mut self, h: u32) {
         self.before_time_secs += h * 60 * 60;
     }
 
-    pub fn before_minute(&mut self, m: u32){
+    pub fn before_minute(&mut self, m: u32) {
         self.before_time_secs += m * 60;
     }
 
-    pub fn before_second(&mut self, s: u32){
+    pub fn before_second(&mut self, s: u32) {
         self.before_time_secs += s;
     }
 
@@ -71,18 +71,23 @@ impl SrtGenerator {
                 if field.name() == "timestamp" {
                     if let Value::Timestamp(ts) = field.value() {
                         if before
-                            && self.after_time_secs >= ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second() {
-                                // TODO DEBUG print here
-                                // println!("skip {}:{}:{}", ts.hour(), ts.minute(), ts.second());
-                                continue;
-                            } else if self.before_time_secs > 0 && self.before_time_secs < ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second(){
-                                // TODO DEBUG print here
-                                // println!("skip record after {}:{}:{}", ts.hour(), ts.minute(), ts.second());
-                                break;
-                            } else {
-                                before = false;
-                                timestamp = Some(*ts);
-                            }
+                            && self.after_time_secs
+                                >= ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
+                        {
+                            // TODO DEBUG print here
+                            // println!("skip {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                            continue;
+                        } else if self.before_time_secs > 0
+                            && self.before_time_secs
+                                < ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
+                        {
+                            // TODO DEBUG print here
+                            // println!("skip record after {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                            break;
+                        } else {
+                            before = false;
+                            timestamp = Some(*ts);
+                        }
                     }
                 } else if field.name() == "depth" {
                     if let Value::Float64(v) = field.value() {
