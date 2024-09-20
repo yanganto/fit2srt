@@ -1,9 +1,13 @@
 [package]
 name = "fit2srt"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
 fitparser = "0.7.0"
 chrono = "0.4.28"
 clap = { version =  "4.5.17", features= ["derive"] }
+
+[dev-dependencies]
+test_bin = "0.4.0"
+test-with = { version = "*", default-features = false, features = ["timezone"] }
