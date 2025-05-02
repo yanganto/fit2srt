@@ -9,7 +9,6 @@ fn with_help() {
         .starts_with(b"Usage: fit2srt [OPTIONS] <FIT_FILE>"));
 }
 
-
 #[test]
 fn without_option() {
     let output = test_bin::get_test_bin("fit2srt")
