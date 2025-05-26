@@ -4,9 +4,11 @@ fn with_help() {
         .arg("--help")
         .output()
         .expect("Failed to launch fit2srt");
-    assert!(output
-        .stdout
-        .starts_with(b"Usage: fit2srt [OPTIONS] <FIT_FILE>"));
+    assert!(
+        output
+            .stdout
+            .starts_with(b"Usage: fit2srt [OPTIONS] <FIT_FILE>")
+    );
 }
 
 #[test]
@@ -15,9 +17,11 @@ fn without_option() {
         .arg("asset/garmin_g1.fit")
         .output()
         .expect("Failed to launch fit2srt");
-    assert!(output
-        .stdout
-        .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.5M\n\n"));
+    assert!(
+        output
+            .stdout
+            .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.5M\n\n")
+    );
 }
 
 // Run test in UTC timezone and in CI
@@ -28,9 +32,11 @@ fn with_before() {
         .args(["-a", "03:10:00", "asset/garmin_g1.fit"])
         .output()
         .expect("Failed to launch fit2srt");
-    assert!(output
-        .stdout
-        .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.7M\n\n"));
+    assert!(
+        output
+            .stdout
+            .starts_with(b"1\n00:00:00,000 --> 00:00:01,000\n1.7M\n\n")
+    );
 }
 
 // Run test in UTC timezone and in CI

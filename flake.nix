@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -23,7 +23,10 @@
       in
       {
         devShell = pkgs.mkShell ({
-          buildInputs = [ pkgs.rust-bin.stable."1.81.0".default ];
+          buildInputs = [ 
+            pkgs.rust-bin.stable."1.85.0".default
+            pkgs.rust-analyzer-unwrapped
+          ];
         });
       }
     );

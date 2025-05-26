@@ -1,12 +1,12 @@
 [package]
 name = "fit2srt"
 version = "0.1.1"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 fitparser = "0.9.0"
 chrono = "0.4.28"
-clap = { version =  "4.5.17", features= ["derive"] }
+uutils-args = { git = "https://github.com/uutils/uutils-args.git" }
 
 [dev-dependencies]
 test_bin = "0.4.0"
