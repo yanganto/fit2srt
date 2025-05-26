@@ -51,11 +51,7 @@ fn time_to_vec(time_str: &str) -> Result<Vec<u32>, ParseIntError> {
                 }
             })
             .collect();
-        if let Some(e) = err {
-            Err(e)
-        } else {
-            Ok(time)
-        }
+        if let Some(e) = err { Err(e) } else { Ok(time) }
     } else {
         Ok(vec![
             time_str[0..2].parse()?,
@@ -116,9 +112,7 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
 }
 
 fn main() {
-    let (cli, _operands) = Cli::default()
-        .parse(std::env::args_os())
-        .unwrap();
+    let (cli, _operands) = Cli::default().parse(std::env::args_os()).unwrap();
 
     if let Err(e) = run(cli) {
         println!("{e:?}");
