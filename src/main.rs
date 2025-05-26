@@ -1,23 +1,41 @@
 #![allow(special_module_name)]
-use clap::Parser;
 use std::num::ParseIntError;
 use std::path::PathBuf;
+use uutils_args::{Arguments, Options};
 
 mod lib;
 use lib::SrtGenerator;
 
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
-struct Cli {
+#[derive(Arguments)]
+enum Arg {
     /// Generate subtitles after 00:00:00
-    #[arg(short, long)]
-    after: Option<String>,
+    #[arg("-a TIME", "--after=TIME", "after=TIME")]
+    After(String),
 
     /// Generate subtitles before 00:00:00
-    #[arg(short, long)]
-    before: Option<String>,
+    #[arg("-b TIME", "--before=TIME", "before=TIME")]
+    Before(String),
 
+    #[arg("PATH")]
+    File(PathBuf),
+}
+
+#[derive(Default)]
+struct Cli {
+    after: Option<String>,
+    before: Option<String>,
     fit_file: PathBuf,
+}
+
+impl Options<Arg> for Cli {
+    fn apply(&mut self, arg: Arg) -> Result<(), uutils_args::Error> {
+        match arg {
+            Arg::After(a) => self.after = Some(a),
+            Arg::Before(b) => self.before = Some(b),
+            Arg::File(p) => self.fit_file = p,
+        }
+        Ok(())
+    }
 }
 
 fn time_to_vec(time_str: &str) -> Result<Vec<u32>, ParseIntError> {
@@ -98,7 +116,11 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
 }
 
 fn main() {
-    if let Err(e) = run(Cli::parse()) {
+    let (cli, _operands) = Cli::default()
+        .parse(std::env::args_os())
+        .unwrap();
+
+    if let Err(e) = run(cli) {
         println!("{e:?}");
     }
 }
