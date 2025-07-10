@@ -2,6 +2,7 @@
 name = "fit2srt"
 version = "0.1.1"
 edition = "2021"
+rust-version = "1.77.0" # Due to std::fs::create_new
 
 [dependencies]
 fitparser = "0.10.0"

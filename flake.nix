@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -11,19 +11,25 @@
     };
 
     flake-utils.url = "github:numtide/flake-utils";
+    crane.url = "github:ipetkov/crane";
   };
 
-  outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
+  outputs = { self, nixpkgs, rust-overlay, flake-utils, crane, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
           inherit system overlays;
         };
+        cargoToml = (builtins.fromTOML (builtins.readFile ./Cargo.toml));
       in
       {
+        packages = (import ./nix/packages.nix { 
+          inherit self pkgs crane;
+          specificRust = pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal;
+        });
         devShell = pkgs.mkShell ({
-          buildInputs = [ pkgs.rust-bin.stable."1.81.0".default ];
+          buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal ];
         });
       }
     );
