@@ -24,7 +24,7 @@ fn time_to_vec(time_str: &str) -> Result<Vec<u32>, ParseIntError> {
     if time_str.contains(':') {
         let mut err = None;
         let time = time_str
-            .split(":")
+            .split(':')
             .map(|s| match s.parse() {
                 Ok(i) => i,
                 Err(e) => {
