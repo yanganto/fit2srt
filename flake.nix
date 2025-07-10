@@ -28,9 +28,15 @@
           inherit self pkgs crane;
           specificRust = pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal;
         });
-        devShell = pkgs.mkShell ({
-          buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal ];
-        });
+        devShells = rec {
+          default = dev;
+          dev = pkgs.mkShell ({
+            buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal ];
+          });
+          ci = pkgs.mkShell ({
+            buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.default ];
+          });
+        };
       }
     );
 }
