@@ -4,7 +4,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
   push:
     branches: main
 
@@ -24,7 +23,6 @@ jobs:
         id: fetch-tag
         run: |
           LATEST_TAG="$(git describe --tags --abbrev=0)"
-          mkdir -p .github/badges/
           echo "##[set-output name=latest;]${LATEST_TAG}"
 
       - name: Generate Latest Tag Badge SVG Image
