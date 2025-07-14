@@ -192,22 +192,49 @@ fn srt_time_string() {
 
 #[test]
 fn parse_garmin_g1() -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static>> {
-    let mut generator = SrtGenerator::default().open("asset/garmin_g1.fit")?;
+    let mut iter = SrtGenerator::default().open("asset/garmin_g1.fit")?;
     assert_eq!(
-        generator.next(),
+        iter.next(),
         Some("1\n00:00:00,000 --> 00:00:01,000\n1.5M".to_string())
     );
     assert_eq!(
-        generator.next(),
+        iter.next(),
         Some("2\n00:00:01,000 --> 00:00:02,000\n1.7M".to_string())
     );
     assert_eq!(
-        generator.next(),
+        iter.next(),
         Some("3\n00:00:02,000 --> 00:00:03,000\n2.0M".to_string())
     );
     assert_eq!(
-        generator.next(),
+        iter.next(),
         Some("4\n00:00:03,000 --> 00:00:06,000\n1.8M".to_string())
+    );
+    Ok(())
+}
+
+#[test]
+fn parse_with_start_time() -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static>> {
+    let mut generator = SrtGenerator::default();
+    generator.start_time_hr = 11;
+    generator.start_time_min = 58;
+    generator.start_time_sec = 29;
+    let mut iter = generator.open("asset/713-2.fit")?;
+
+    assert_eq!(
+        iter.next(),
+        Some("1\n00:55:40,000 --> 00:55:43,000\n1.3M".to_string())
+    );
+    assert_eq!(
+        iter.next(),
+        Some("2\n00:55:43,000 --> 00:55:44,000\n1.5M".to_string())
+    );
+    assert_eq!(
+        iter.next(),
+        Some("3\n00:55:44,000 --> 00:55:47,000\n1.6M".to_string())
+    );
+    assert_eq!(
+        iter.next(),
+        Some("4\n00:55:47,000 --> 00:55:48,000\n1.9M".to_string())
     );
     Ok(())
 }
