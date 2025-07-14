@@ -17,6 +17,12 @@ struct Cli {
     #[arg(short, long)]
     before: Option<String>,
 
+    /// Generate subtitles start from 00:00:00
+    /// This option is used if you recording a video before the dive computer started
+    /// If you record after dive computer started, you do not need this.
+    #[arg(short, long)]
+    start: Option<String>,
+
     fit_file: PathBuf,
 }
 
@@ -87,6 +93,26 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
         if !valid {
             // TODO
             eprintln!("before invalid");
+            return Ok(());
+        }
+    }
+
+    if let Some(start_str) = cli.start {
+        let mut valid = true;
+        let start_time: Vec<u32> = time_to_vec(&start_str)?;
+
+        if start_time.len() == 3 && start_time[0] <= 24 && start_time[1] < 60 || start_time[2] < 60
+        {
+            generator.start_time_hr = start_time[0];
+            generator.start_time_min = start_time[1];
+            generator.start_time_sec = start_time[2];
+        } else {
+            valid = false;
+        }
+
+        if !valid {
+            // TODO
+            eprintln!("start invalid");
             return Ok(());
         }
     }

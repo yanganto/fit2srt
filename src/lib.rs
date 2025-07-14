@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeDelta, Timelike};
+use chrono::{DateTime, Local, NaiveTime, TimeDelta, TimeZone, Timelike};
 use fitparser::Value;
 use std::collections::VecDeque;
 use std::fs::File;
@@ -11,6 +11,11 @@ pub struct SrtGenerator {
     field: &'static str,
     tick: f64,
     unit: Option<String>,
+    // These are used when a video recording before under water
+    pub start_time_hr: u32,
+    pub start_time_min: u32,
+    pub start_time_sec: u32,
+
     after_time_secs: u32,
     before_time_secs: u32,
 }
@@ -21,6 +26,9 @@ impl Default for SrtGenerator {
             field: "depth",
             tick: 0.1,
             unit: Some("M".to_string()),
+            start_time_hr: 0,
+            start_time_min: 0,
+            start_time_sec: 0,
             after_time_secs: 0,
             before_time_secs: 0,
         }
@@ -62,6 +70,7 @@ impl SrtGenerator {
         let mut data = VecDeque::new();
         let mut unit = self.unit;
         let mut before = true;
+        let mut previous_time = None;
 
         for record in fitparser::from_reader(&mut fp)? {
             let mut timestamp: Option<DateTime<Local>> = None;
@@ -110,7 +119,24 @@ impl SrtGenerator {
                         previous_value = rounded_value;
                     }
                 } else {
-                    start_time = timestamp;
+                    if self.start_time_hr != 0
+                        || self.start_time_min != 0
+                        || self.start_time_sec != 0
+                    {
+                        let date = unsafe { timestamp.as_ref().unwrap_unchecked().date_naive() };
+                        let time = NaiveTime::from_hms_opt(
+                            self.start_time_hr,
+                            self.start_time_min,
+                            self.start_time_sec,
+                        )
+                        .expect("Invalid start time!");
+                        let naive_datetime = date.and_time(time);
+                        let st = Local.from_local_datetime(&naive_datetime).unwrap();
+                        previous_time = unsafe { Some(timestamp.unwrap_unchecked() - st) };
+                        start_time = Some(st);
+                    } else {
+                        start_time = timestamp;
+                    }
                     previous_value = value;
                 }
             }
@@ -119,7 +145,7 @@ impl SrtGenerator {
         Ok(SrtIter {
             count: 0,
             data,
-            previous_time: TimeDelta::default(),
+            previous_time: previous_time.unwrap_or_default(),
         })
     }
 }
