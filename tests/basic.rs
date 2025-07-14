@@ -53,3 +53,17 @@ fn with_time_slot() {
 "#
     );
 }
+
+// Run test in UTC timezone and in CI
+#[test_with::timezone(0)]
+fn with_start_time() {
+    // The args only work for UTC timezone
+    let output = test_bin::get_test_bin("fit2srt")
+        .args(["-a", "03:58:29", "-s", "03:58:29", "asset/713-2.fit"])
+        .output()
+        .expect("Failed to launch fit2srt");
+
+    assert!(output.stdout.starts_with(
+        b"1\n00:55:40,000 --> 00:55:43,000\n1.3M\n\n2\n00:55:43,000 --> 00:55:44,000\n1.5M\n\n3\n00:55:44,000 --> 00:55:47,000\n1.6M\n\n4\n00:55:47,000 --> 00:55:48,000\n1.9M\n\n"
+    ));
+}
