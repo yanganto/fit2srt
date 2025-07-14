@@ -1,0 +1,49 @@
+name: UpdateBadge
+concurrency:
+  group: update-badge-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: main
+
+jobs:
+  UpdateBadge:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch Tag
+        id: fetch-tag
+        run: |
+          LATEST_TAG="$(git describe --tags --abbrev=0)"
+          echo "##[set-output name=latest;]${LATEST_TAG}"
+
+      - name: Generate Latest Tag Badge SVG Image
+        uses: emibcn/badge-action@v2
+        with:
+          label: 'Release'
+          status: ${{ steps.fetch-tag.outputs.latest }}
+          color: 4da2ff
+          path: .github/badges/release.svg
+
+      - name: Commit Badge
+        id: commit-badge
+        continue-on-error: true
+        run: |
+          git config --local user.email "yanganto@gmail.com"
+          git config --local user.name "Antonio Yang"
+          git add .github/badges/*
+          git commit -m "update badges"
+
+      - name: Push Badge Commit
+        if: steps.commit-badge.outcome == 'success' && steps.commit-badge.conclusion == 'success'
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.head_ref }}
