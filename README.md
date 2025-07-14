@@ -1,4 +1,6 @@
-# fit2srt
+Fit2srt
+---
+![Release](./.github/badges/release-version-badge.svg)
 Generate SRT subtitles from FIT for diver
 
 ### Usage
