@@ -11,7 +11,7 @@ With Nix build system, you can easy to run this command
 
 ### Example
 There are subtitles with realtime depth in following dive video.  The subtitles are generate by this tool.
-- [SMB Deploy](https://www.youtube.com/watch?v=ro4Y1-1ny4M)
-  ![SMB Deploy Image](./asset/demo.png)
-- [Stress Test of Dive Master Training](https://www.youtube.com/watch?v=gxGQsMdCE8Q)
-  ![Stress Test of DM IMAGE](./asset/demo2.png)
+- [Video for SMB Deploy](https://www.youtube.com/watch?v=ro4Y1-1ny4M)
+  [![SMB Deploy Image](./asset/demo.png)](https://www.youtube.com/watch?v=ro4Y1-1ny4M)
+- [Video for Stress Test of Dive Master Training](https://www.youtube.com/watch?v=gxGQsMdCE8Q)
+  [![Stress Test of DM IMAGE](./asset/demo2.png)](https://www.youtube.com/watch?v=gxGQsMdCE8Q)
