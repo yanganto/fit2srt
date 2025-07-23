@@ -34,7 +34,7 @@
             buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal ];
           });
           ci = pkgs.mkShell ({
-            buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.default ];
+            buildInputs = [ pkgs.rust-bin.stable.latest.default ];
           });
         };
       }
