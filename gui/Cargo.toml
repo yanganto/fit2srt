@@ -1,0 +1,12 @@
+[package]
+name = "fit2srt-gui"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.77.0" # Due to std::fs::create_new
+
+[dependencies]
+fit2srt-core = { path = "../lib" }
+
+[dev-dependencies]
+test_bin = "0.5.0"
+test-with = { version = "*", default-features = false, features = ["timezone"] }

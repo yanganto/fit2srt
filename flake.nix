@@ -21,7 +21,7 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-        cargoToml = (builtins.fromTOML (builtins.readFile ./Cargo.toml));
+        cargoToml = (builtins.fromTOML (builtins.readFile ./cli/Cargo.toml));
       in
       {
         packages = (import ./nix/packages.nix { 
