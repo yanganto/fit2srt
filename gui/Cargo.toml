@@ -6,9 +6,7 @@ rust-version = "1.77.0" # Due to std::fs::create_new
 
 [dependencies]
 fit2srt-core = { path = "../lib" }
-# iced = { version = "0.13.1", features = ["image", "debug", "wayland"] }
 iced = { git = "https://github.com/pop-os/iced.git", branch = "master", features = [
-    "tokio",
     "wayland",
     "winit",
     "image"
