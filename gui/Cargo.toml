@@ -6,7 +6,20 @@ rust-version = "1.77.0" # Due to std::fs::create_new
 
 [dependencies]
 fit2srt-core = { path = "../lib" }
+# iced = { version = "0.13.1", features = ["image", "debug", "wayland"] }
+iced = { git = "https://github.com/pop-os/iced.git", branch = "master", features = [
+    "tokio",
+    "wayland",
+    "winit",
+    "image"
+] }
+console_error_panic_hook = "0.1"
+console_log = "1.0"
 
-[dev-dependencies]
-test_bin = "0.5.0"
-test-with = { version = "*", default-features = false, features = ["timezone"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tracing-subscriber = "0.3"
+open = "5"
+
+# [target.'cfg(target_arch = "wasm32")'.dependencies]
+# iced = { git = "https://github.com/Faervan/iced_pop-os.git", features = ["image", "debug", "webgl", "fira-sans"] }

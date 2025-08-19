@@ -2,7 +2,7 @@
 name = "fit2srt-cli"
 version = "0.2.0"
 edition = "2021"
-rust-version = "1.77.0" # Due to std::fs::create_new
+rust-version = "1.88.0"
 
 [dependencies]
 fit2srt-core = { path = "../lib" }

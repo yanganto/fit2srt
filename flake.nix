@@ -31,7 +31,20 @@
         devShells = rec {
           default = dev;
           dev = pkgs.mkShell ({
-            buildInputs = [ pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal ];
+            buildInputs = with pkgs; [ 
+              rust-bin.stable.${cargoToml.package.rust-version}.minimal 
+              wayland
+              libxkbcommon
+            ];
+            nativeBuildInputs = with pkgs; [ 
+              pkg-config
+              wayland
+              libxkbcommon
+            ];
+            # ICED needed additional LD_LIBRARY_PATH
+            shellHook = ''
+              export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath [pkgs.wayland])}"
+            '';
           });
           ci = pkgs.mkShell ({
             buildInputs = [ pkgs.rust-bin.stable.latest.default ];
