@@ -156,6 +156,8 @@ impl App {
             .push("You can see some sample video here:")
             // TODO: https://github.com/squidowl/halloy/blob/main/src/widget/selectable_rich_text.rs
             .push("https://www.youtube.com/@yanganto/videos")
+            .push("If you want to any scuba diving crouse, please contact with me.")
+            .push("yanganto@gmail.com")
     }
 
     fn inputs(&self) -> Column<Message> {
