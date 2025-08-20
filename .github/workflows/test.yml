@@ -20,3 +20,7 @@ jobs:
       - name: Test
         run: |
           nix develop -c cargo test
+
+      - name: Build Cli & Gui
+        run: |
+          nix develop -c cargo build

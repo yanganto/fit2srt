@@ -1,14 +1,9 @@
-[package]
-name = "fit2srt"
-version = "0.2.0"
-edition = "2021"
-rust-version = "1.77.0" # Due to std::fs::create_new
+[workspace]
+members = [
+    "lib",
+    "cli",
+    "gui"
+ ]
 
-[dependencies]
-fitparser = "0.10.0"
+[workspace.dependencies]
 chrono = "0.4.28"
-clap = { version =  "4.5.45", features= ["derive"] }
-
-[dev-dependencies]
-test_bin = "0.5.0"
-test-with = { version = "*", default-features = false, features = ["timezone"] }

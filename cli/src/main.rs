@@ -3,8 +3,7 @@ use clap::Parser;
 use std::num::ParseIntError;
 use std::path::PathBuf;
 
-mod lib;
-use lib::SrtGenerator;
+use fit2srt_core::SrtGenerator;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
