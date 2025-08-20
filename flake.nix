@@ -28,11 +28,9 @@
           inherit self pkgs crane;
           specificRust = pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal;
         });
-        devShells = rec {
-          default = dev;
-          dev = pkgs.mkShell ({
+        devShells = 
+        let 
             buildInputs = with pkgs; [ 
-              rust-bin.stable.${cargoToml.package.rust-version}.minimal 
               wayland
               libxkbcommon
             ];
@@ -42,13 +40,24 @@
               libxkbcommon
               zenity
             ];
+        in
+        rec {
+          default = dev;
+          dev = pkgs.mkShell ({
+            buildInputs = buildInputs ++ [
+              pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal 
+            ];
+            inherit nativeBuildInputs;
             # ICED needed additional LD_LIBRARY_PATH
             shellHook = ''
               export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath [pkgs.wayland])}"
             '';
           });
           ci = pkgs.mkShell ({
-            buildInputs = [ pkgs.rust-bin.stable.latest.default ];
+            buildInputs = buildInputs ++ [
+              pkgs.rust-bin.stable.latest.default 
+            ];
+            inherit nativeBuildInputs;
           });
         };
       }
