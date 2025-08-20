@@ -1,18 +1,18 @@
 #[test]
 fn with_help() {
-    let output = test_bin::get_test_bin("fit2srt-cli")
+    let output = test_bin::get_test_bin!("fit2srt-cli")
         .arg("--help")
         .output()
         .expect("Failed to launch fit2srt");
     assert!(output
         .stdout
-        .starts_with(b"Usage: fit2srt [OPTIONS] <FIT_FILE>"));
+        .starts_with(b"Usage: fit2srt-cli [OPTIONS] <FIT_FILE>"));
 }
 
 #[test]
 fn without_option() {
     let output = test_bin::get_test_bin("fit2srt-cli")
-        .arg("asset/garmin_g1.fit")
+        .arg("../assets/garmin_g1.fit")
         .output()
         .expect("Failed to launch fit2srt");
     assert!(output
@@ -25,7 +25,7 @@ fn without_option() {
 fn with_before() {
     // The args only work for UTC timezone
     let output = test_bin::get_test_bin("fit2srt-cli")
-        .args(["-a", "03:10:00", "asset/garmin_g1.fit"])
+        .args(["-a", "03:10:00", "../assets/garmin_g1.fit"])
         .output()
         .expect("Failed to launch fit2srt");
     assert!(output
@@ -37,7 +37,13 @@ fn with_before() {
 #[test_with::timezone(0)]
 fn with_time_slot() {
     let output = test_bin::get_test_bin("fit2srt-cli")
-        .args(["-a", "03:10:00", "-b", "03:10:05", "asset/garmin_g1.fit"])
+        .args([
+            "-a",
+            "03:10:00",
+            "-b",
+            "03:10:05",
+            "../assets/garmin_g1.fit",
+        ])
         .output()
         .expect("Failed to launch fit2srt");
     assert_eq!(
@@ -59,7 +65,7 @@ fn with_time_slot() {
 fn with_start_time() {
     // The args only work for UTC timezone
     let output = test_bin::get_test_bin("fit2srt-cli")
-        .args(["-a", "03:58:29", "-s", "03:58:29", "asset/713-2.fit"])
+        .args(["-a", "03:58:29", "-s", "03:58:29", "../assets/713-2.fit"])
         .output()
         .expect("Failed to launch fit2srt");
 

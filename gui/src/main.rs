@@ -247,7 +247,7 @@ fn paypal_donate<'a>(width: u16, filter_method: image::FilterMethod) -> Containe
             image("/paypal-qrcode.png")
         } else {
             image(format!(
-                "{}/assets/paypal-qrcode.png",
+                "{}/../assets/paypal-qrcode.png",
                 env!("CARGO_MANIFEST_DIR")
             ))
         }
@@ -265,7 +265,7 @@ fn btc_donate<'a>(width: u16, filter_method: image::FilterMethod) -> Container<'
             image("/btc-qrcode.jpg")
         } else {
             image(format!(
-                "{}/assets/btc-qrcode.jpg",
+                "{}/../assets/btc-qrcode.jpg",
                 env!("CARGO_MANIFEST_DIR")
             ))
         }
