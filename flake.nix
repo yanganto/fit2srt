@@ -40,6 +40,7 @@
               pkg-config
               wayland
               libxkbcommon
+              zenity
             ];
             # ICED needed additional LD_LIBRARY_PATH
             shellHook = ''

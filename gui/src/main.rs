@@ -1,9 +1,12 @@
-use iced::widget::{
-    button, checkbox, column, container, horizontal_space, image, radio, row, scrollable, slider,
-    text, text_input, toggler, vertical_space,
-};
-use iced::widget::{Button, Column, Container, Slider};
-use iced::{Center, Color, Element, Fill, Font, Pixels};
+use std::fs::write;
+use std::path::PathBuf;
+
+use chrono::{NaiveTime, TimeDelta, Timelike};
+use fit2srt_core::SrtGenerator;
+use iced::widget::{button, column, container, horizontal_space, image, row, scrollable, text};
+use iced::widget::{Button, Column, Container};
+use iced::{Color, Element, Fill};
+use native_dialog::DialogBuilder;
 
 pub fn main() -> iced::Result {
     // #[cfg(target_arch = "wasm32")]
@@ -15,42 +18,35 @@ pub fn main() -> iced::Result {
     #[cfg(not(target_arch = "wasm32"))]
     tracing_subscriber::fmt::init();
 
-    iced::application(Tour::title, Tour::update, Tour::view)
+    iced::application(App::title, App::update, App::view)
         .centered()
         .run()
 }
 
-pub struct Tour {
+pub struct App {
     screen: Screen,
-    slider: u8,
-    spacing: u16,
-    text_size: u16,
-    text_color: Color,
-    toggler: bool,
-    image_width: u16,
-    image_filter_method: image::FilterMethod,
-    input_value: String,
-    input_is_secure: bool,
-    input_is_showing_icon: bool,
     debug: bool,
+    fitfile: Option<PathBuf>,
+    starting_time: NaiveTime,
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
     BackPressed,
     NextPressed,
-    InputChanged(String),
+    SelectFile,
+    StartingTimeChange(i64),
 }
 
-impl Tour {
+impl App {
     fn title(&self) -> String {
         let screen = match self.screen {
             Screen::Intro => "Introduction",
-            Screen::TextInput => "Text input",
+            Screen::Input => "Setup inputs",
             Screen::End => "End",
         };
 
-        format!("Fit2srt - {}", screen)
+        format!("Fit2srt - {screen}")
     }
 
     fn update(&mut self, event: Message) {
@@ -61,14 +57,52 @@ impl Tour {
                 }
             }
             Message::NextPressed => {
+                if let Err(_msg) = self.gen_srt() {
+                    return;
+                }
+
                 if let Some(screen) = self.screen.next() {
                     self.screen = screen;
                 }
             }
-            Message::InputChanged(input_value) => {
-                self.input_value = input_value;
+            Message::SelectFile => {
+                // #[cfg(target_arch = "wasm32")]
+                // TODO
+
+                #[cfg(not(target_arch = "wasm32"))]
+                let path = DialogBuilder::file()
+                    .set_location("~/")
+                    .add_filter("Fit File", ["fit"])
+                    .open_single_file()
+                    .show();
+
+                self.fitfile = path.unwrap_or_default();
+            }
+            Message::StartingTimeChange(t) => {
+                self.starting_time += TimeDelta::try_seconds(t).unwrap();
             }
         }
+    }
+
+    fn gen_srt(&self) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static>> {
+        let mut generator = SrtGenerator::default();
+        generator.after_second(self.starting_time.num_seconds_from_midnight());
+        if let Some(f) = &self.fitfile {
+            let mut srt_content = String::new();
+            for srt in generator.open(f)? {
+                srt_content += &format!("{srt:}\n\n");
+            }
+            write(self.srt_file().as_ref().unwrap(), srt_content)?;
+        }
+        Ok(())
+    }
+
+    fn srt_file(&self) -> Option<PathBuf> {
+        let mut srt_path = self.fitfile.clone();
+        if let Some(ref mut p) = srt_path {
+            p.set_extension("srt");
+        }
+        srt_path
     }
 
     fn view(&self) -> Element<Message> {
@@ -86,7 +120,7 @@ impl Tour {
 
         let screen = match self.screen {
             Screen::Intro => self.welcome(),
-            Screen::TextInput => self.text_input(),
+            Screen::Input => self.inputs(),
             Screen::End => self.end(),
         };
 
@@ -111,7 +145,7 @@ impl Tour {
     fn can_continue(&self) -> bool {
         match self.screen {
             Screen::Intro => true,
-            Screen::TextInput => !self.input_value.is_empty(),
+            Screen::Input => self.fitfile.is_some(),
             Screen::End => false,
         }
     }
@@ -119,49 +153,42 @@ impl Tour {
     fn welcome(&self) -> Column<Message> {
         Self::container("Welcome!")
             .push("This is a simple tool for you to make your diving log as video subtitles.")
+            .push("You can see some sample video here:")
+            // TODO: https://github.com/squidowl/halloy/blob/main/src/widget/selectable_rich_text.rs
+            .push("https://www.youtube.com/@yanganto/videos")
     }
 
-    fn text_input(&self) -> Column<Message> {
-        let value = &self.input_value;
-        let is_secure = self.input_is_secure;
-        let is_showing_icon = self.input_is_showing_icon;
-
-        let mut text_input = text_input("Type something to continue...", value)
-            .on_input(Message::InputChanged)
-            .padding(10)
-            .size(30);
-
-        if is_showing_icon {
-            text_input = text_input.icon(text_input::Icon {
-                font: Font::default(),
-                code_point: '🚀',
-                size: Some(Pixels(28.0)),
-                spacing: 10.0,
-                side: text_input::Side::Right,
-            });
-        }
-
-        Self::container("Text input")
-            .push("Use a text input to ask for different kinds of information.")
-            .push(text_input.secure(is_secure))
+    fn inputs(&self) -> Column<Message> {
+        Self::container("Setup inputs")
+            .push(text(if let Some(f) = &self.fitfile {
+                format!("1. Fit file loaded: {}", f.display())
+            } else {
+                "1. Select the fit file from you diving computer.".to_string()
+            }))
+            .push(padded_button("Open").on_press(Message::SelectFile))
+            .push("2. Setup the starting time of the video")
             .push(
-                "A text input produces a message every time it changes. It is \
-                 very easy to keep track of its contents:",
+                row![
+                    button("+").on_press(Message::StartingTimeChange(3600)),
+                    button("+").on_press(Message::StartingTimeChange(60)),
+                    button("+").on_press(Message::StartingTimeChange(1)),
+                ]
+                .spacing(10),
             )
+            .push(text(self.starting_time.format("%H:%M:%S").to_string()).size(24))
             .push(
-                text(if value.is_empty() {
-                    "You have not typed anything yet..."
-                } else {
-                    value
-                })
-                .width(Fill)
-                .align_x(Center),
+                row![
+                    button("-").on_press(Message::StartingTimeChange(-3600)),
+                    button("-").on_press(Message::StartingTimeChange(-60)),
+                    button("-").on_press(Message::StartingTimeChange(-1)),
+                ]
+                .spacing(10),
             )
     }
 
     fn end(&self) -> Column<Message> {
         Self::container("All Done!")
-            .push("The .srt file is created in the same folder for .fit file.")
+            .push(text(format!("The .srt file is created: {}", self.srt_file().unwrap().display())))
             .push("You can upload .srt to youtube or use it in video editor.")
             .push("If you like this project, please buy me a coffee via paypal or bitcoin to support me.")
             .push(paypal_donate(300, image::FilterMethod::Linear))
@@ -177,12 +204,12 @@ impl Tour {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Screen {
     Intro,
-    TextInput,
+    Input,
     End,
 }
 
 impl Screen {
-    const ALL: &'static [Self] = &[Self::Intro, Self::TextInput, Self::End];
+    const ALL: &'static [Self] = &[Self::Intro, Self::Input, Self::End];
 
     pub fn next(self) -> Option<Screen> {
         Self::ALL
@@ -252,21 +279,13 @@ fn padded_button<Message: Clone>(label: &str) -> Button<'_, Message> {
     button(text(label)).padding([12, 24])
 }
 
-impl Default for Tour {
+impl Default for App {
     fn default() -> Self {
         Self {
             screen: Screen::Intro,
-            slider: 50,
-            spacing: 20,
-            text_size: 30,
-            text_color: Color::BLACK,
-            toggler: false,
-            image_width: 300,
-            image_filter_method: image::FilterMethod::Linear,
-            input_value: String::new(),
-            input_is_secure: false,
-            input_is_showing_icon: false,
             debug: false,
+            fitfile: None,
+            starting_time: NaiveTime::default(),
         }
     }
 }
