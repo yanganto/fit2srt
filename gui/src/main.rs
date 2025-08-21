@@ -3,10 +3,16 @@ use std::path::PathBuf;
 
 use chrono::{NaiveTime, TimeDelta, Timelike};
 use fit2srt_core::SrtGenerator;
-use iced::widget::{button, column, container, horizontal_space, image, row, scrollable, text};
+use iced::widget::{
+    button, column, container, horizontal_space, image, rich_text, row, scrollable, span, text,
+};
+use iced::widget::{qr_code, qr_code::Data};
 use iced::widget::{Button, Column, Container};
-use iced::{Color, Element, Fill};
+use iced::{color, Color, Element, Fill};
 use native_dialog::DialogBuilder;
+
+static BTC_ADDR: &[u8; 34] = b"3QQ6vmEvjznxqSub4hCQRymicT2kKCcLzd";
+static PAYPAL_ADDR: &[u8; 48] = b"https://www.paypal.com/ncp/payment/EH3BJ4MSTFQN4";
 
 pub fn main() -> iced::Result {
     // #[cfg(target_arch = "wasm32")]
@@ -28,6 +34,8 @@ pub struct App {
     debug: bool,
     fitfile: Option<PathBuf>,
     starting_time: NaiveTime,
+    btc_qr_data: Data,
+    paypal_qr_data: Data,
 }
 
 #[derive(Debug, Clone)]
@@ -152,12 +160,16 @@ impl App {
 
     fn welcome(&self) -> Column<Message> {
         Self::container("Welcome!")
-            .push("This is a simple tool for you to make your diving log as video subtitles.")
-            .push("You can see some sample video here:")
+            .push(column![
+                text("This is a simple tool for you to make your diving log as video subtitles."),
+                text("You can see some sample video here:"),
+                rich_text![span("https://www.youtube.com/@yanganto/videos").color(color!(0x0000FF))]
+            ])
             // TODO: https://github.com/squidowl/halloy/blob/main/src/widget/selectable_rich_text.rs
-            .push("https://www.youtube.com/@yanganto/videos")
-            .push("If you want to any scuba diving crouse, please contact with me.")
-            .push("yanganto@gmail.com")
+            .push(column![
+                text("If you want to any scuba diving crouse, please contact with me."),
+                rich_text![span("yanganto@gmail.com").color(color!(0x0000FF))]
+            ])
     }
 
     fn inputs(&self) -> Column<Message> {
@@ -190,12 +202,15 @@ impl App {
 
     fn end(&self) -> Column<Message> {
         Self::container("All Done!")
-            .push(text(format!("The .srt file is created: {}", self.srt_file().unwrap().display())))
-            .push("You can upload .srt to youtube or use it in video editor.")
-            .push("If you like this project, please buy me a coffee via paypal or bitcoin to support me.")
-            .push(paypal_donate(300, image::FilterMethod::Linear))
-            .push("BTC address")
-            .push(btc_donate(250, image::FilterMethod::Linear))
+        .push(text(format!("The .srt file is created: {}", self.srt_file().unwrap().display())))
+        .push("You can upload .srt to youtube or use it in video editor.")
+        .push("If you like this project, please buy me a coffee via paypal or bitcoin to support me.")
+        .push(
+            row!["PayPal address", "BTC address"].spacing(50)
+        )
+        .push(
+            row![qr_img(&self.paypal_qr_data), qr_img(&self.btc_qr_data)].spacing(50)
+        )
     }
 
     fn container(title: &str) -> Column<'_, Message> {
@@ -241,40 +256,8 @@ impl Screen {
     }
 }
 
-fn paypal_donate<'a>(width: u16, filter_method: image::FilterMethod) -> Container<'a, Message> {
-    container(
-        // This should go away once we unify resource loading on native
-        // platforms
-        if cfg!(target_arch = "wasm32") {
-            image("/paypal-qrcode.png")
-        } else {
-            image(format!(
-                "{}/../assets/paypal-qrcode.png",
-                env!("CARGO_MANIFEST_DIR")
-            ))
-        }
-        .filter_method(filter_method)
-        .width(width),
-    )
-    .center_x(Fill)
-}
-
-fn btc_donate<'a>(width: u16, filter_method: image::FilterMethod) -> Container<'a, Message> {
-    container(
-        // This should go away once we unify resource loading on native
-        // platforms
-        if cfg!(target_arch = "wasm32") {
-            image("/btc-qrcode.jpg")
-        } else {
-            image(format!(
-                "{}/../assets/btc-qrcode.jpg",
-                env!("CARGO_MANIFEST_DIR")
-            ))
-        }
-        .filter_method(filter_method)
-        .width(width),
-    )
-    .center_x(Fill)
+fn qr_img(data: &Data) -> Element<'_, Message> {
+    qr_code(data).into()
 }
 
 fn padded_button<Message: Clone>(label: &str) -> Button<'_, Message> {
@@ -288,6 +271,8 @@ impl Default for App {
             debug: false,
             fitfile: None,
             starting_time: NaiveTime::default(),
+            btc_qr_data: Data::new(BTC_ADDR).unwrap(),
+            paypal_qr_data: Data::new(PAYPAL_ADDR).unwrap(),
         }
     }
 }

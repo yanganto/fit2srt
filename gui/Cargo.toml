@@ -8,7 +8,8 @@ fit2srt-core = { path = "../lib" }
 iced = { git = "https://github.com/pop-os/iced.git", branch = "master", features = [
     "wayland",
     "winit",
-    "image"
+    "image",
+    "qr_code"
 ] }
 native-dialog = "0.9.0"
 chrono.workspace = true
