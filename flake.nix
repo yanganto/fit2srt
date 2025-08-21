@@ -4,10 +4,7 @@
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -55,7 +52,7 @@
           });
           ci = pkgs.mkShell ({
             buildInputs = buildInputs ++ [
-              pkgs.rust-bin.stable.latest.default 
+              pkgs.rust-bin.stable.${cargoToml.package.rust-version}.default 
             ];
             inherit nativeBuildInputs;
           });
