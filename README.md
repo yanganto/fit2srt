@@ -8,6 +8,8 @@ Generate SRT subtitles from FIT for diver
 With Nix build system, you can easy to run this command
 
 `nix run github:yanganto/fit2srt`
+or
+`nix run github:yanganto/fit2srt#wrapped-fit2srt-gui` (use zenity for file selector)
 
 ### Gui
 Gui app is now in workable version.

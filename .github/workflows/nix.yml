@@ -17,6 +17,14 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: check
+      - name: Check
         run: |
           nix flake check
+
+      - name: Build Cli (Default)
+        run: |
+          nix build
+
+      - name: Build Gui
+        run: |
+          nix build .#wrapped-fit2srt-gui
