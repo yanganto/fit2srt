@@ -52,7 +52,7 @@
           });
           ci = pkgs.mkShell ({
             buildInputs = buildInputs ++ [
-              pkgs.rust-bin.stable.latest.default 
+              pkgs.rust-bin.stable.${cargoToml.package.rust-version}.default 
             ];
             inherit nativeBuildInputs;
           });
