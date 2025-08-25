@@ -3,16 +3,16 @@ use std::path::PathBuf;
 
 use chrono::{NaiveTime, TimeDelta, Timelike};
 use fit2srt_core::SrtGenerator;
+// use iced::widget::qr_code::{Data, QRCode};
 use iced::widget::{
     button, column, container, horizontal_space, image, rich_text, row, scrollable, span, text,
 };
-use iced::widget::{qr_code, qr_code::Data};
-use iced::widget::{Button, Column, Container};
-use iced::{color, Color, Element, Fill};
+use iced::widget::{Button, Column};
+use iced::{color, font::Weight, Color, Element, Fill, Font};
 use native_dialog::DialogBuilder;
 
-static BTC_ADDR: &[u8; 34] = b"3QQ6vmEvjznxqSub4hCQRymicT2kKCcLzd";
-static PAYPAL_ADDR: &[u8; 48] = b"https://www.paypal.com/ncp/payment/EH3BJ4MSTFQN4";
+// static BTC_ADDR: &[u8; 34] = b"3QQ6vmEvjznxqSub4hCQRymicT2kKCcLzd";
+// static PAYPAL_ADDR: &[u8; 48] = b"https://www.paypal.com/ncp/payment/EH3BJ4MSTFQN4";
 
 pub fn main() -> iced::Result {
     // #[cfg(target_arch = "wasm32")]
@@ -34,8 +34,8 @@ pub struct App {
     debug: bool,
     fitfile: Option<PathBuf>,
     starting_time: NaiveTime,
-    btc_qr_data: Data,
-    paypal_qr_data: Data,
+    // btc_qr_data: Data,
+    // paypal_qr_data: Data,
 }
 
 #[derive(Debug, Clone)]
@@ -52,6 +52,7 @@ impl App {
             Screen::Intro => "Introduction",
             Screen::Input => "Setup inputs",
             Screen::End => "End",
+            Screen::CryptoDonate => "CryptoDonate",
         };
 
         format!("Fit2srt - {screen}")
@@ -130,6 +131,7 @@ impl App {
             Screen::Intro => self.welcome(),
             Screen::Input => self.inputs(),
             Screen::End => self.end(),
+            Screen::CryptoDonate => self.crypto_donate(),
         };
 
         let content: Element<_> = column![screen, controls,]
@@ -154,7 +156,8 @@ impl App {
         match self.screen {
             Screen::Intro => true,
             Screen::Input => self.fitfile.is_some(),
-            Screen::End => false,
+            Screen::End => true,
+            Screen::CryptoDonate => false,
         }
     }
 
@@ -206,11 +209,30 @@ impl App {
         .push("You can upload .srt to youtube or use it in video editor.")
         .push("If you like this project, please buy me a coffee via paypal or bitcoin to support me.")
         .push(
-            row!["PayPal address", "BTC address"].spacing(50)
+            rich_text![span("PayPal").font(Font { weight: Weight::Bold, ..Font::default() })]
         )
         .push(
-            row![qr_img(&self.paypal_qr_data), qr_img(&self.btc_qr_data)].spacing(50)
+            // container(qr_img(&self.paypal_qr_data))
+            container(image(format!("{}/../assets/paypal-qrcode.png", env!("CARGO_MANIFEST_DIR"))))
+            .center_x(Fill)
         )
+    }
+    fn crypto_donate(&self) -> Column<Message> {
+        Self::container("Help us")
+            .push("If you want to donate with crypto.")
+            .push("Please help us with Bitcoin.")
+            .push(rich_text![span("BTC").font(Font {
+                weight: Weight::Bold,
+                ..Font::default()
+            })])
+            .push(
+                // container(qr_img(&self.btc_qr_data)).center(600)
+                container(image(format!(
+                    "{}/../assets/btc-qrcode.jpg",
+                    env!("CARGO_MANIFEST_DIR")
+                )))
+                .center_x(Fill),
+            )
     }
 
     fn container(title: &str) -> Column<'_, Message> {
@@ -223,10 +245,11 @@ enum Screen {
     Intro,
     Input,
     End,
+    CryptoDonate,
 }
 
 impl Screen {
-    const ALL: &'static [Self] = &[Self::Intro, Self::Input, Self::End];
+    const ALL: &'static [Self] = &[Self::Intro, Self::Input, Self::End, Self::CryptoDonate];
 
     pub fn next(self) -> Option<Screen> {
         Self::ALL
@@ -256,9 +279,10 @@ impl Screen {
     }
 }
 
-fn qr_img(data: &Data) -> Element<'_, Message> {
-    qr_code(data).into()
-}
+// TODO Fix QRCode generating bug
+// fn qr_img(data: &Data) -> Element<'_, Message> {
+//     QRCode::new(data).cell_size(10).into()
+// }
 
 fn padded_button<Message: Clone>(label: &str) -> Button<'_, Message> {
     button(text(label)).padding([12, 24])
@@ -271,8 +295,8 @@ impl Default for App {
             debug: false,
             fitfile: None,
             starting_time: NaiveTime::default(),
-            btc_qr_data: Data::new(BTC_ADDR).unwrap(),
-            paypal_qr_data: Data::new(PAYPAL_ADDR).unwrap(),
+            // btc_qr_data: Data::new(BTC_ADDR).unwrap(),
+            // paypal_qr_data: Data::new(PAYPAL_ADDR).unwrap(),
         }
     }
 }

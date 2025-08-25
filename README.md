@@ -27,7 +27,5 @@ There are subtitles with realtime depth in following dive video.  The subtitles 
 ### Donate QRs
 #### Paypal
 [https://www.paypal.com/ncp/payment/EH3BJ4MSTFQN4](https://www.paypal.com/ncp/payment/EH3BJ4MSTFQN4)
-![PaypayQR](./assets/paypal-qrcode.png)
-
-#### BTC Address 3QQ6vmEvjznxqSub4hCQRymicT2kKCcLzd
-![BTC QR](./assets/btc-qrcode.jpg)
+#### BTC Address 
+3QQ6vmEvjznxqSub4hCQRymicT2kKCcLzd
