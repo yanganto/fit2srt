@@ -11,11 +11,9 @@ pub struct SrtGenerator {
     field: &'static str,
     tick: f64,
     unit: Option<String>,
-    // These are used when a video recording before under water
-    pub start_time_hr: u32,
-    pub start_time_min: u32,
-    pub start_time_sec: u32,
 
+    // These are used when a video recording before under water
+    start_time_secs: u32,
     after_time_secs: u32,
     before_time_secs: u32,
 }
@@ -26,9 +24,7 @@ impl Default for SrtGenerator {
             field: "depth",
             tick: 0.1,
             unit: Some("M".to_string()),
-            start_time_hr: 0,
-            start_time_min: 0,
-            start_time_sec: 0,
+            start_time_secs: 0,
             after_time_secs: 0,
             before_time_secs: 0,
         }
@@ -58,6 +54,18 @@ impl SrtGenerator {
 
     pub fn before_second(&mut self, s: u32) {
         self.before_time_secs += s;
+    }
+
+    pub fn starting_hour(&mut self, h: u32) {
+        self.start_time_secs += h * 60 * 60;
+    }
+
+    pub fn starting_minute(&mut self, m: u32) {
+        self.start_time_secs += m * 60;
+    }
+
+    pub fn starting_second(&mut self, s: u32) {
+        self.start_time_secs += s;
     }
 
     pub fn open<P: AsRef<Path>>(
@@ -119,17 +127,11 @@ impl SrtGenerator {
                         previous_value = rounded_value;
                     }
                 } else {
-                    if self.start_time_hr != 0
-                        || self.start_time_min != 0
-                        || self.start_time_sec != 0
-                    {
+                    if self.start_time_secs != 0 {
                         let date = unsafe { timestamp.as_ref().unwrap_unchecked().date_naive() };
-                        let time = NaiveTime::from_hms_opt(
-                            self.start_time_hr,
-                            self.start_time_min,
-                            self.start_time_sec,
-                        )
-                        .expect("Invalid start time!");
+                        let time =
+                            NaiveTime::from_num_seconds_from_midnight_opt(self.start_time_secs, 0)
+                                .expect("Invalid start time!");
                         let naive_datetime = date.and_time(time);
                         let st = Local.from_local_datetime(&naive_datetime).unwrap();
                         previous_time = unsafe { Some(timestamp.unwrap_unchecked() - st) };
