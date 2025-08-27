@@ -102,9 +102,9 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
 
         if start_time.len() == 3 && start_time[0] <= 24 && start_time[1] < 60 || start_time[2] < 60
         {
-            generator.start_time_hr = start_time[0];
-            generator.start_time_min = start_time[1];
-            generator.start_time_sec = start_time[2];
+            generator.starting_hour(start_time[0]);
+            generator.starting_minute(start_time[1]);
+            generator.starting_second(start_time[2]);
         } else {
             valid = false;
         }
