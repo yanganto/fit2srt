@@ -6,11 +6,11 @@ use std::path::Path;
 
 type SrtString = String;
 
+#[derive(Copy, Clone)]
 pub struct SrtGenerator {
     #[allow(dead_code)]
     field: &'static str,
     tick: f64,
-    unit: Option<String>,
 
     // These are used when a video recording before under water
     start_time_secs: u32,
@@ -23,7 +23,6 @@ impl Default for SrtGenerator {
         Self {
             field: "depth",
             tick: 0.1,
-            unit: Some("M".to_string()),
             start_time_secs: 0,
             after_time_secs: 0,
             before_time_secs: 0,
@@ -76,7 +75,7 @@ impl SrtGenerator {
         let mut start_time: Option<DateTime<Local>> = None;
         let mut previous_value = f64::NAN;
         let mut data = VecDeque::new();
-        let mut unit = self.unit;
+        let mut unit = "".to_string();
         let mut before = true;
         let mut previous_time = None;
 
@@ -111,8 +110,8 @@ impl SrtGenerator {
                         has_depth = true;
                         value = *v;
                     }
-                    if unit.is_none() {
-                        unit = Some(field.units().to_string())
+                    if unit.is_empty() {
+                        unit = field.units().to_string();
                     }
                 }
             }
@@ -122,7 +121,7 @@ impl SrtGenerator {
                     if (rounded_value - previous_value).abs() > self.tick {
                         data.push_back((
                             timestamp.unwrap() - start_time,
-                            format!("{rounded_value:.1}{}", unit.as_ref().unwrap()),
+                            format!("{rounded_value:.1}{unit}"),
                         ));
                         previous_value = rounded_value;
                     }
@@ -148,7 +147,20 @@ impl SrtGenerator {
             count: 0,
             data,
             previous_time: previous_time.unwrap_or_default(),
+            previous_iter_previours_time: TimeDelta::default(),
         })
+    }
+
+    pub fn concat<P: AsRef<Path>>(
+        self,
+        previous_iter_count: usize,
+        previous_iter_timedelta: TimeDelta,
+        path: P,
+    ) -> Result<SrtIter, Box<dyn std::error::Error + Sync + Send + 'static>> {
+        let mut it = self.open(path)?;
+        it.count = previous_iter_count;
+        it.previous_iter_previours_time = previous_iter_timedelta;
+        Ok(it)
     }
 }
 
@@ -156,22 +168,27 @@ pub struct SrtIter {
     count: usize,
     data: VecDeque<(TimeDelta, String)>,
     previous_time: TimeDelta,
+    previous_iter_previours_time: TimeDelta,
 }
 
 impl std::iter::Iterator for SrtIter {
-    type Item = SrtString;
-
+    type Item = (usize, TimeDelta, SrtString);
     fn next(&mut self) -> Option<Self::Item> {
         self.count += 1;
-        let previous_time_str = delta_srt_format(&self.previous_time);
+        let time = self.previous_time + self.previous_iter_previours_time;
+        let previous_time_str = delta_srt_format(&time);
         self.data.pop_front().map(|i| {
             self.previous_time = i.0;
-            format!(
-                "{}\n{} --> {}\n{}",
+            (
                 self.count,
-                previous_time_str,
-                delta_srt_format(&i.0),
-                i.1
+                time,
+                format!(
+                    "{}\n{} --> {}\n{}",
+                    self.count,
+                    previous_time_str,
+                    delta_srt_format(&i.0),
+                    i.1
+                ),
             )
         })
     }
