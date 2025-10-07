@@ -22,7 +22,7 @@ struct Cli {
     #[arg(short, long)]
     start: Option<String>,
 
-    fit_file: PathBuf,
+    fit_files: Vec<PathBuf>,
 }
 
 fn time_to_vec(time_str: &str) -> Result<Vec<u32>, ParseIntError> {
@@ -115,9 +115,18 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
             return Ok(());
         }
     }
-
-    for srt in generator.open(cli.fit_file)? {
-        println!("{srt:}\n");
+    let mut previous_iter_info: Option<(usize, chrono::TimeDelta)> = None;
+    for fit_file in cli.fit_files.iter() {
+        let iter = if let Some(info) = previous_iter_info {
+            generator.concat(info.0, info.1, fit_file)?
+        } else {
+            generator.open(fit_file)?
+        };
+        for (count, time_delta, srt) in iter.into_iter() {
+            println!("{srt:}\n");
+            // TODO find other way to keep state of iterator
+            previous_iter_info = Some((count, time_delta));
+        }
     }
     Ok(())
 }

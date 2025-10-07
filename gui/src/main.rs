@@ -98,7 +98,7 @@ impl App {
         generator.after_second(self.starting_time.num_seconds_from_midnight());
         if let Some(f) = &self.fitfile {
             let mut srt_content = String::new();
-            for srt in generator.open(f)? {
+            for (_, _, srt) in generator.open(f)? {
                 srt_content += &format!("{srt:}\n\n");
             }
             write(self.srt_file().as_ref().unwrap(), srt_content)?;
