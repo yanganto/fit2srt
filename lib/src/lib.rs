@@ -212,21 +212,13 @@ fn srt_time_string() {
 #[test]
 fn parse_garmin_g1() -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static>> {
     let mut iter = SrtGenerator::default().open("../assets/garmin_g1.fit")?;
-    assert_eq!(
-        iter.next(),
-        Some("1\n00:00:00,000 --> 00:00:01,000\n1.5M".to_string())
-    );
-    assert_eq!(
-        iter.next(),
-        Some("2\n00:00:01,000 --> 00:00:02,000\n1.7M".to_string())
-    );
-    assert_eq!(
-        iter.next(),
-        Some("3\n00:00:02,000 --> 00:00:03,000\n2.0M".to_string())
-    );
-    assert_eq!(
-        iter.next(),
-        Some("4\n00:00:03,000 --> 00:00:06,000\n1.8M".to_string())
-    );
+    let (_idx, _time_delta, srt) = iter.next().unwrap();
+    assert_eq!(srt, "1\n00:00:00,000 --> 00:00:01,000\n1.5m".to_string());
+    let (_idx, _time_delta, srt) = iter.next().unwrap();
+    assert_eq!(srt, "2\n00:00:01,000 --> 00:00:02,000\n1.7m".to_string());
+    let (_idx, _time_delta, srt) = iter.next().unwrap();
+    assert_eq!(srt, "3\n00:00:02,000 --> 00:00:03,000\n2.0m".to_string());
+    let (_idx, _time_delta, srt) = iter.next().unwrap();
+    assert_eq!(srt, "4\n00:00:03,000 --> 00:00:06,000\n1.8m".to_string());
     Ok(())
 }
