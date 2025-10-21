@@ -7,7 +7,7 @@ rust-version = "1.88.0"
 [dependencies]
 fit2srt-core = { path = "../lib" }
 chrono.workspace = true
-clap = { version =  "4.5.48", features= ["derive"] }
+clap = { version =  "4.5.49", features= ["derive"] }
 
 [dev-dependencies]
 test_bin = "0.5.0"
