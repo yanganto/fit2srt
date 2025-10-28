@@ -1569,7 +1569,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "dnd",
  "iced_accessibility",
@@ -1587,7 +1587,7 @@ dependencies = [
 [[package]]
 name = "iced_accessibility"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "accesskit",
  "accesskit_winit",
@@ -1596,7 +1596,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "bitflags 2.9.4",
  "bytes",
@@ -1619,7 +1619,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "futures",
  "iced_core",
@@ -1644,7 +1644,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "bitflags 2.9.4",
  "bytemuck",
@@ -1665,7 +1665,7 @@ dependencies = [
 [[package]]
 name = "iced_renderer"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "iced_graphics",
  "iced_tiny_skia",
@@ -1677,7 +1677,7 @@ dependencies = [
 [[package]]
 name = "iced_runtime"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "bytes",
  "cosmic-client-toolkit",
@@ -1692,7 +1692,7 @@ dependencies = [
 [[package]]
 name = "iced_tiny_skia"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "bytemuck",
  "cosmic-text",
@@ -1707,7 +1707,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "as-raw-xcb-connection",
  "bitflags 2.9.4",
@@ -1736,7 +1736,7 @@ dependencies = [
 [[package]]
 name = "iced_widget"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -1754,7 +1754,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#7bb364e01d6cd6c07703416828006ab497a082e6"
+source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
