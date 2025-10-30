@@ -8,7 +8,6 @@ type SrtString = String;
 
 #[derive(Copy, Clone)]
 pub struct SrtGenerator {
-    #[allow(dead_code)]
     field: &'static str,
     tick: f64,
 
@@ -105,7 +104,7 @@ impl SrtGenerator {
                             timestamp = Some(*ts);
                         }
                     }
-                } else if field.name() == "depth" {
+                } else if field.name() == self.field {
                     if let Value::Float64(v) = field.value() {
                         has_depth = true;
                         value = *v;
