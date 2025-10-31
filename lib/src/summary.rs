@@ -81,11 +81,9 @@ impl Summary {
     }
 
     pub fn merge(self, other: &Self) -> Result<Self, crate::error::Fit2SrtError> {
-        if self.temperature_unit != other.temperature_unit
-            || self.depth_unit != other.depth_unit
-        {
+        if self.temperature_unit != other.temperature_unit || self.depth_unit != other.depth_unit {
             return Err(crate::error::Fit2SrtError::MergeError(
-                "unit inconsist".to_string(),
+                "unit inconsistent".to_string(),
             ));
         }
 
@@ -147,7 +145,7 @@ impl Summary {
 
         let new_max_depth = match (max_depth, other.max_depth) {
             (Some(old_max_d), Some(other_max_d)) => {
-                if old_max_d < other_max_d {
+                if old_max_d > other_max_d {
                     Some(old_max_d)
                 } else {
                     Some(other_max_d)
