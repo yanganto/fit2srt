@@ -7,3 +7,4 @@ rust-version = "1.77.0" # Due to std::fs::create_new
 [dependencies]
 fitparser = "0.10.0"
 chrono.workspace = true
+thiserror = "2"
