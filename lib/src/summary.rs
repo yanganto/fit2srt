@@ -40,17 +40,12 @@ impl Summary {
     }
 
     pub fn is_empty(&self) -> bool {
-        if self.location.0.is_some()
+        !(self.location.0.is_some()
             || self.location.1.is_some()
             || self.avg_temperature.is_some()
             || self.min_temperature.is_some()
             || self.avg_depth.is_some()
-            || self.max_depth.is_some()
-        {
-            false
-        } else {
-            true
-        }
+            || self.max_depth.is_some())
     }
     pub fn location(&self) -> Option<(f64, f64)> {
         if let (Some(lat), Some(long)) = self.location {
@@ -123,7 +118,7 @@ impl Summary {
 
         let new_avg_depth = match (avg_depth, other.avg_depth) {
             (Some(old_avg_d), Some(other_avg_d)) => {
-                Some((old_avg_d as f64 * time + other_avg_d as f64 * other.time) / total_time)
+                Some((old_avg_d * time + other_avg_d * other.time) / total_time)
             }
             (Some(old_avg_d), None) => Some(old_avg_d),
             (None, Some(other_avg_d)) => Some(other_avg_d),

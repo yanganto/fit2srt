@@ -139,7 +139,7 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
     }
     if !summary.is_empty() && !cli.no_summary {
         if let Some((mut count, previous_time)) = previous_iter_info {
-            count = count + 1;
+            count += 1;
             let previous_time = previous_time
                 .checked_add(&chrono::TimeDelta::try_seconds(5).unwrap())
                 .unwrap();
@@ -158,14 +158,14 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
                         summary_str += &format!(" (min: {min_t:}{})", summary.temp_unit());
                     }
                 }
-                summary_str += &format!("\n");
+                summary_str += "\n";
             }
             if let Some(avg_d) = summary.avg_depth {
                 summary_str += &format!("Depth: {avg_d:}{}", summary.depth_unit());
                 if let Some(max_d) = summary.max_depth {
                     summary_str += &format!(" (max: {max_d:}{})", summary.depth_unit());
                 }
-                summary_str += &format!("\n");
+                summary_str += "\n";
             }
 
             println!(

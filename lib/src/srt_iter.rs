@@ -247,7 +247,7 @@ pub struct SrtIter {
 
 impl SrtIter {
     pub fn previous_time(&self) -> TimeDelta {
-        self.previous_time.clone()
+        self.previous_time
     }
 }
 
