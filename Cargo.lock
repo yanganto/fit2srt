@@ -1125,7 +1125,7 @@ dependencies = [
 
 [[package]]
 name = "fit2srt-core"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "fitparser",
