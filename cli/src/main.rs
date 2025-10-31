@@ -4,6 +4,7 @@ use std::num::ParseIntError;
 use std::path::PathBuf;
 
 use fit2srt_core::SrtGenerator;
+use fit2srt_core::Summary;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -21,6 +22,10 @@ struct Cli {
     /// If you record after dive computer started, you do not need this.
     #[arg(short, long)]
     start: Option<String>,
+
+    /// Generate dive summary in the end of srt
+    #[arg(short, long)]
+    no_summary: bool,
 
     fit_files: Vec<PathBuf>,
 }
@@ -115,17 +120,61 @@ fn run(cli: Cli) -> Result<(), Box<dyn std::error::Error + Sync + Send + 'static
             return Ok(());
         }
     }
+
     let mut previous_iter_info: Option<(usize, chrono::TimeDelta)> = None;
+    let mut summary = Summary::default();
+
     for fit_file in cli.fit_files.iter() {
         let iter = if let Some(info) = previous_iter_info {
             generator.concat(info.0, info.1, fit_file)?
         } else {
             generator.open(fit_file)?
         };
+        summary = summary.merge(&iter.summary)?;
         for (count, time_delta, srt) in iter.into_iter() {
             println!("{srt:}\n");
             // TODO find other way to keep state of iterator
             previous_iter_info = Some((count, time_delta));
+        }
+    }
+    if !summary.is_empty() && !cli.no_summary {
+        if let Some((mut count, previous_time)) = previous_iter_info {
+            count = count + 1;
+            let previous_time = previous_time
+                .checked_add(&chrono::TimeDelta::try_seconds(5).unwrap())
+                .unwrap();
+            let previous_time_str = fit2srt_core::srt_iter::delta_srt_format(&previous_time);
+            let end_time = previous_time
+                .checked_add(&chrono::TimeDelta::try_seconds(10).unwrap())
+                .unwrap();
+            let mut summary_str = "Summary:\n".to_string();
+            if let Some((lat, long)) = summary.location() {
+                summary_str += &format!("Location: {lat:}, {long:}\n");
+            }
+            if let Some(avg_t) = summary.avg_temperature {
+                summary_str += &format!("Temperature: {avg_t:}{}", summary.temp_unit());
+                if let Some(min_t) = summary.min_temperature {
+                    if avg_t != min_t {
+                        summary_str += &format!(" (min: {min_t:}{})", summary.temp_unit());
+                    }
+                }
+                summary_str += &format!("\n");
+            }
+            if let Some(avg_d) = summary.avg_depth {
+                summary_str += &format!("Depth: {avg_d:}{}", summary.depth_unit());
+                if let Some(max_d) = summary.max_depth {
+                    summary_str += &format!(" (max: {max_d:}{})", summary.depth_unit());
+                }
+                summary_str += &format!("\n");
+            }
+
+            println!(
+                "{}\n{} --> {}\n{}",
+                count,
+                previous_time_str,
+                fit2srt_core::srt_iter::delta_srt_format(&end_time),
+                summary_str
+            );
         }
     }
     Ok(())

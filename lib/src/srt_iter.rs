@@ -4,6 +4,8 @@ use std::collections::VecDeque;
 use std::fs::File;
 use std::path::Path;
 
+use crate::summary::Summary;
+
 type SrtString = String;
 
 #[derive(Copy, Clone)]
@@ -77,72 +79,144 @@ impl SrtGenerator {
         let mut unit = "".to_string();
         let mut before = true;
         let mut previous_time = None;
+        let mut summary = Summary::default();
 
         for record in fitparser::from_reader(&mut fp)? {
             let mut timestamp: Option<DateTime<Local>> = None;
             let mut value = 0f64;
             let mut has_depth = false;
-            for field in record.fields() {
-                if field.name() == "timestamp" {
-                    if let Value::Timestamp(ts) = field.value() {
-                        if before
-                            && self.after_time_secs
-                                >= ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
-                        {
-                            // TODO DEBUG print here
-                            // println!("skip {}:{}:{}", ts.hour(), ts.minute(), ts.second());
-                            continue;
-                        } else if self.before_time_secs > 0
-                            && self.before_time_secs
-                                < ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
-                        {
-                            // TODO DEBUG print here
-                            // println!("skip record after {}:{}:{}", ts.hour(), ts.minute(), ts.second());
-                            break;
-                        } else {
-                            before = false;
-                            timestamp = Some(*ts);
+            match record.kind() {
+                fitparser::profile::field_types::MesgNum::DiveSummary => {
+                    for field in record.fields() {
+                        match field.name() {
+                            "avg_depth" => {
+                                if let fitparser::Value::Float64(d) = field.value() {
+                                    summary.avg_depth = Some(*d);
+                                    summary.set_unit(field.units())?
+                                }
+                            }
+                            "max_depth" => {
+                                if let fitparser::Value::Float64(d) = field.value() {
+                                    summary.max_depth = Some(*d);
+                                    summary.set_unit(field.units())?
+                                }
+                            }
+                            _ => (),
                         }
                     }
-                } else if field.name() == self.field {
-                    if let Value::Float64(v) = field.value() {
-                        has_depth = true;
-                        value = *v;
-                    }
-                    if unit.is_empty() {
-                        unit = field.units().to_string();
+                }
+                fitparser::profile::field_types::MesgNum::Session => {
+                    for field in record.fields() {
+                        match field.name() {
+                            "start_position_lat" | "end_position_lat" => {
+                                if let fitparser::Value::SInt32(lat) = field.value() {
+                                    if let Some(old_lat) = summary.location.0 {
+                                        let avg_lat = old_lat / 2 + *lat / 2;
+                                        summary.location.0 = Some(avg_lat);
+                                    } else {
+                                        summary.location.0 = Some(*lat);
+                                    }
+                                }
+                            }
+                            "start_position_long" | "end_position_long" => {
+                                if let fitparser::Value::SInt32(long) = field.value() {
+                                    if let Some(old_long) = summary.location.1 {
+                                        let avg_long = old_long / 2 + *long / 2;
+                                        summary.location.1 = Some(avg_long);
+                                    } else {
+                                        summary.location.1 = Some(*long);
+                                    }
+                                }
+                            }
+                            "total_elapsed_time" => {
+                                if let fitparser::Value::Float64(t) = field.value() {
+                                    summary.time = *t
+                                }
+                            }
+                            "avg_temperature" => {
+                                if let fitparser::Value::SInt8(t) = field.value() {
+                                    summary.avg_temperature = Some(*t);
+                                    summary.set_unit(field.units())?;
+                                }
+                            }
+                            "min_temperature" => {
+                                if let fitparser::Value::SInt8(t) = field.value() {
+                                    summary.min_temperature = Some(*t);
+                                    summary.set_unit(field.units())?
+                                }
+                            }
+                            _ => (),
+                        }
                     }
                 }
-            }
-            if timestamp.is_some() && has_depth {
-                if let Some(start_time) = start_time {
-                    let rounded_value = (value / self.tick).round() * self.tick;
-                    if (rounded_value - previous_value).abs() > self.tick {
-                        data.push_back((
-                            timestamp.unwrap() - start_time,
-                            format!("{rounded_value:.1}{unit}"),
-                        ));
-                        previous_value = rounded_value;
+                _ => {
+                    for field in record.fields() {
+                        if field.name() == "timestamp" {
+                            if let Value::Timestamp(ts) = field.value() {
+                                if before
+                                    && self.after_time_secs
+                                        >= ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
+                                {
+                                    // TODO DEBUG print here
+                                    // println!("skip {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                                    continue;
+                                } else if self.before_time_secs > 0
+                                    && self.before_time_secs
+                                        < ts.hour() * 60 * 60 + ts.minute() * 60 + ts.second()
+                                {
+                                    // TODO DEBUG print here
+                                    // println!("skip record after {}:{}:{}", ts.hour(), ts.minute(), ts.second());
+                                    break;
+                                } else {
+                                    before = false;
+                                    timestamp = Some(*ts);
+                                }
+                            }
+                        } else if field.name() == self.field {
+                            if let Value::Float64(v) = field.value() {
+                                has_depth = true;
+                                value = *v;
+                            }
+                            if unit.is_empty() {
+                                unit = field.units().to_string();
+                            }
+                        }
                     }
-                } else {
-                    if self.start_time_secs != 0 {
-                        let date = unsafe { timestamp.as_ref().unwrap_unchecked().date_naive() };
-                        let time =
-                            NaiveTime::from_num_seconds_from_midnight_opt(self.start_time_secs, 0)
+                    if timestamp.is_some() && has_depth {
+                        if let Some(start_time) = start_time {
+                            let rounded_value = (value / self.tick).round() * self.tick;
+                            if (rounded_value - previous_value).abs() > self.tick {
+                                data.push_back((
+                                    timestamp.unwrap() - start_time,
+                                    format!("{rounded_value:.1}{unit}"),
+                                ));
+                                previous_value = rounded_value;
+                            }
+                        } else {
+                            if self.start_time_secs != 0 {
+                                let date =
+                                    unsafe { timestamp.as_ref().unwrap_unchecked().date_naive() };
+                                let time = NaiveTime::from_num_seconds_from_midnight_opt(
+                                    self.start_time_secs,
+                                    0,
+                                )
                                 .expect("Invalid start time!");
-                        let naive_datetime = date.and_time(time);
-                        let st = Local.from_local_datetime(&naive_datetime).unwrap();
-                        previous_time = unsafe { Some(timestamp.unwrap_unchecked() - st) };
-                        start_time = Some(st);
-                    } else {
-                        start_time = timestamp;
+                                let naive_datetime = date.and_time(time);
+                                let st = Local.from_local_datetime(&naive_datetime).unwrap();
+                                previous_time = unsafe { Some(timestamp.unwrap_unchecked() - st) };
+                                start_time = Some(st);
+                            } else {
+                                start_time = timestamp;
+                            }
+                            previous_value = value;
+                        }
                     }
-                    previous_value = value;
                 }
             }
         }
 
         Ok(SrtIter {
+            summary,
             count: 0,
             data,
             previous_time: previous_time.unwrap_or_default(),
@@ -164,10 +238,17 @@ impl SrtGenerator {
 }
 
 pub struct SrtIter {
-    count: usize,
-    data: VecDeque<(TimeDelta, String)>,
+    pub summary: Summary,
+    pub count: usize,
     previous_time: TimeDelta,
+    data: VecDeque<(TimeDelta, String)>,
     previous_iter_previours_time: TimeDelta,
+}
+
+impl SrtIter {
+    pub fn previous_time(&self) -> TimeDelta {
+        self.previous_time.clone()
+    }
 }
 
 impl std::iter::Iterator for SrtIter {
@@ -193,7 +274,7 @@ impl std::iter::Iterator for SrtIter {
     }
 }
 
-fn delta_srt_format(delta: &TimeDelta) -> String {
+pub fn delta_srt_format(delta: &TimeDelta) -> String {
     format!(
         "{:0>2}:{:0>2}:{:0>2},{:0>3}",
         delta.num_hours(),
