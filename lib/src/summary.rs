@@ -1,8 +1,8 @@
 #[derive(Copy, Clone, Default)]
 pub struct Summary {
-    // It is a rough postion,
+    // It is a roughly position,
     // based on `start_position_lat`, `start_position_long`, and/or `end_position_lat`, `end_position_long`
-    // fit use `Sint32`for positions
+    // fit use `Sint32` for positions
     pub location: (Option<i32>, Option<i32>),
 
     // Value for temperatures
@@ -73,7 +73,7 @@ impl Summary {
             }
             _ => {
                 return Err(crate::error::Fit2SrtError::MergeError(format!(
-                    "unsupport unit: {u:}"
+                    "unsupported unit: {u:}"
                 )));
             }
         }
@@ -82,7 +82,7 @@ impl Summary {
 
     pub fn merge(self, other: &Self) -> Result<Self, crate::error::Fit2SrtError> {
         if self.temperature_unit != other.temperature_unit
-            || self.depth_unit != other.temperature_unit
+            || self.depth_unit != other.depth_unit
         {
             return Err(crate::error::Fit2SrtError::MergeError(
                 "unit inconsist".to_string(),

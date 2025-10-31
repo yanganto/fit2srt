@@ -220,7 +220,7 @@ impl SrtGenerator {
             count: 0,
             data,
             previous_time: previous_time.unwrap_or_default(),
-            previous_iter_previours_time: TimeDelta::default(),
+            previous_iter_previous_time: TimeDelta::default(),
         })
     }
 
@@ -232,7 +232,7 @@ impl SrtGenerator {
     ) -> Result<SrtIter, Box<dyn std::error::Error + Sync + Send + 'static>> {
         let mut it = self.open(path)?;
         it.count = previous_iter_count;
-        it.previous_iter_previours_time = previous_iter_timedelta;
+        it.previous_iter_previous_time = previous_iter_timedelta;
         Ok(it)
     }
 }
@@ -242,7 +242,7 @@ pub struct SrtIter {
     pub count: usize,
     previous_time: TimeDelta,
     data: VecDeque<(TimeDelta, String)>,
-    previous_iter_previours_time: TimeDelta,
+    previous_iter_previous_time: TimeDelta,
 }
 
 impl SrtIter {
@@ -255,7 +255,7 @@ impl std::iter::Iterator for SrtIter {
     type Item = (usize, TimeDelta, SrtString);
     fn next(&mut self) -> Option<Self::Item> {
         self.count += 1;
-        let time = self.previous_time + self.previous_iter_previours_time;
+        let time = self.previous_time + self.previous_iter_previous_time;
         let previous_time_str = delta_srt_format(&time);
         self.data.pop_front().map(|i| {
             self.previous_time = i.0;
