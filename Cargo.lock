@@ -774,8 +774,8 @@ dependencies = [
 
 [[package]]
 name = "cosmic-text"
-version = "0.14.2"
-source = "git+https://github.com/pop-os/cosmic-text.git#cffdea2b334e7830a5fd6f95bf5e1784014442a8"
+version = "0.15.0"
+source = "git+https://github.com/pop-os/cosmic-text.git#40fee41332147eb88851163c9c6983018ca4c1ce"
 dependencies = [
  "bitflags 2.9.4",
  "fontdb",
@@ -1570,7 +1570,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "dnd",
  "iced_accessibility",
@@ -1588,7 +1588,7 @@ dependencies = [
 [[package]]
 name = "iced_accessibility"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "accesskit",
  "accesskit_winit",
@@ -1597,7 +1597,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "bitflags 2.9.4",
  "bytes",
@@ -1620,7 +1620,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "futures",
  "iced_core",
@@ -1645,7 +1645,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "bitflags 2.9.4",
  "bytemuck",
@@ -1666,7 +1666,7 @@ dependencies = [
 [[package]]
 name = "iced_renderer"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "iced_graphics",
  "iced_tiny_skia",
@@ -1678,7 +1678,7 @@ dependencies = [
 [[package]]
 name = "iced_runtime"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "bytes",
  "cosmic-client-toolkit",
@@ -1693,7 +1693,7 @@ dependencies = [
 [[package]]
 name = "iced_tiny_skia"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "bytemuck",
  "cosmic-text",
@@ -1708,7 +1708,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "as-raw-xcb-connection",
  "bitflags 2.9.4",
@@ -1737,7 +1737,7 @@ dependencies = [
 [[package]]
 name = "iced_widget"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -1755,7 +1755,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#cfe5f4b1a4413b9c94c10832093b2a9e0de5eece"
+source = "git+https://github.com/pop-os/iced.git?branch=master#783d764cabd6eee020eeae3b50a0d4727a721056"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
