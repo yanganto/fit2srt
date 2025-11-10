@@ -11,7 +11,7 @@ iced = { git = "https://github.com/pop-os/iced.git", branch = "master", features
     "image",
     # "qr_code"
 ] }
-native-dialog = "0.9.2"
+native-dialog = "0.9.3"
 chrono.workspace = true
 
 
