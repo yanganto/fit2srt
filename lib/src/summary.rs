@@ -67,7 +67,7 @@ impl Summary {
                 self.depth_unit = 0;
             }
             _ => {
-                return Err(crate::error::Fit2SrtError::MergeError(format!(
+                return Err(crate::error::Fit2SrtError::SummaryError(format!(
                     "unsupported unit: {u:}"
                 )));
             }
@@ -76,10 +76,17 @@ impl Summary {
     }
 
     pub fn merge(self, other: &Self) -> Result<Self, crate::error::Fit2SrtError> {
-        if self.temperature_unit != other.temperature_unit || self.depth_unit != other.depth_unit {
-            return Err(crate::error::Fit2SrtError::MergeError(
-                "unit inconsistent".to_string(),
-            ));
+        if self.temperature_unit != other.temperature_unit {
+            return Err(crate::error::Fit2SrtError::MergeError(format!(
+                "unit inconsistent between {}, {}",
+                self.temperature_unit, other.temperature_unit
+            )));
+        }
+        if self.depth_unit != other.depth_unit {
+            return Err(crate::error::Fit2SrtError::MergeError(format!(
+                "unit inconsistent between {}, {}",
+                self.depth_unit, other.depth_unit
+            )));
         }
 
         let Summary {
