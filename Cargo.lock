@@ -774,8 +774,8 @@ dependencies = [
 
 [[package]]
 name = "cosmic-text"
-version = "0.15.0"
-source = "git+https://github.com/pop-os/cosmic-text.git#a07a6190548c8e40a55f6b7761387047ff1bf6ff"
+version = "0.16.0"
+source = "git+https://github.com/pop-os/cosmic-text.git#2729d2d49cee481f40a0a79f3996256991e9e721"
 dependencies = [
  "bitflags 2.9.4",
  "fontdb",
@@ -785,7 +785,7 @@ dependencies = [
  "rangemap",
  "rustc-hash 1.1.0",
  "self_cell",
- "skrifa 0.37.0",
+ "skrifa 0.39.0",
  "smol_str",
  "swash",
  "sys-locale",
@@ -1182,9 +1182,9 @@ dependencies = [
 
 [[package]]
 name = "font-types"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "511e2c18a516c666d27867d2f9821f76e7d591f762e9fc41dd6cc5c90fe54b0b"
+checksum = "39a654f404bbcbd48ea58c617c2993ee91d1cb63727a37bf2323a4edeed1b8c5"
 dependencies = [
  "bytemuck",
 ]
@@ -1490,14 +1490,14 @@ dependencies = [
 
 [[package]]
 name = "harfrust"
-version = "0.3.1"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f3fd23d35c2d8bcf34a1f0e9ea8c0ad263f0c8a9a47108eee23aac76e71645a"
+checksum = "e0caaee032384c10dd597af4579c67dee16650d862a9ccbe1233ff1a379abc07"
 dependencies = [
  "bitflags 2.9.4",
  "bytemuck",
  "core_maths",
- "read-fonts 0.35.0",
+ "read-fonts 0.36.0",
  "smallvec",
 ]
 
@@ -1570,7 +1570,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "dnd",
  "iced_accessibility",
@@ -1588,7 +1588,7 @@ dependencies = [
 [[package]]
 name = "iced_accessibility"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "accesskit",
  "accesskit_winit",
@@ -1597,7 +1597,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "bitflags 2.9.4",
  "bytes",
@@ -1620,7 +1620,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "futures",
  "iced_core",
@@ -1645,7 +1645,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "bitflags 2.9.4",
  "bytemuck",
@@ -1666,7 +1666,7 @@ dependencies = [
 [[package]]
 name = "iced_renderer"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "iced_graphics",
  "iced_tiny_skia",
@@ -1678,7 +1678,7 @@ dependencies = [
 [[package]]
 name = "iced_runtime"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "bytes",
  "cosmic-client-toolkit",
@@ -1693,7 +1693,7 @@ dependencies = [
 [[package]]
 name = "iced_tiny_skia"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "bytemuck",
  "cosmic-text",
@@ -1708,7 +1708,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "as-raw-xcb-connection",
  "bitflags 2.9.4",
@@ -1737,7 +1737,7 @@ dependencies = [
 [[package]]
 name = "iced_widget"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -1755,7 +1755,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/iced.git?branch=master#10db38f982001a714bd94e99a082368762b378ee"
+source = "git+https://github.com/pop-os/iced.git?branch=master#2db5545fbee505c2c643c628a8984d1666c4d451"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -3211,13 +3211,13 @@ dependencies = [
 
 [[package]]
 name = "read-fonts"
-version = "0.35.0"
+version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6717cf23b488adf64b9d711329542ba34de147df262370221940dfabc2c91358"
+checksum = "5eaa2941a4c05443ee3a7b26ab076a553c343ad5995230cc2b1d3e993bdc6345"
 dependencies = [
  "bytemuck",
  "core_maths",
- "font-types 0.10.0",
+ "font-types 0.10.1",
 ]
 
 [[package]]
@@ -3457,12 +3457,12 @@ dependencies = [
 
 [[package]]
 name = "skrifa"
-version = "0.37.0"
+version = "0.39.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c31071dedf532758ecf3fed987cdb4bd9509f900e026ab684b4ecb81ea49841"
+checksum = "9c9eb0b904a04d09bd68c65d946617b8ff733009999050f3b851c32fb3cfb60e"
 dependencies = [
  "bytemuck",
- "read-fonts 0.35.0",
+ "read-fonts 0.36.0",
 ]
 
 [[package]]
