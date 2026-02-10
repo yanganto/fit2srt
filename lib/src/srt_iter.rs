@@ -67,12 +67,10 @@ impl SrtGenerator {
     pub fn starting_second(&mut self, s: u32) {
         self.start_time_secs += s;
     }
-
-    pub fn open<P: AsRef<Path>>(
+    pub fn open_file(
         self,
-        path: P,
+        fp: &mut File,
     ) -> Result<SrtIter, Box<dyn std::error::Error + Sync + Send + 'static>> {
-        let mut fp = File::open(path)?;
         let mut start_time: Option<DateTime<Local>> = None;
         let mut previous_value = f64::NAN;
         let mut data = VecDeque::new();
@@ -81,7 +79,7 @@ impl SrtGenerator {
         let mut previous_time = None;
         let mut summary = Summary::default();
 
-        for record in fitparser::from_reader(&mut fp)? {
+        for record in fitparser::from_reader(fp)? {
             let mut timestamp: Option<DateTime<Local>> = None;
             let mut value = 0f64;
             let mut has_depth = false;
@@ -222,6 +220,14 @@ impl SrtGenerator {
             previous_time: previous_time.unwrap_or_default(),
             previous_iter_previous_time: TimeDelta::default(),
         })
+    }
+
+    pub fn open<P: AsRef<Path>>(
+        self,
+        path: P,
+    ) -> Result<SrtIter, Box<dyn std::error::Error + Sync + Send + 'static>> {
+        let mut fp = File::open(path)?;
+        self.open_file(&mut fp)
     }
 
     pub fn concat<P: AsRef<Path>>(
