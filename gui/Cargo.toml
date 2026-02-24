@@ -2,7 +2,7 @@
 name = "fit2srt-gui"
 version = "0.1.2"
 edition = "2021"
-rust-version = "1.89.0"  # due to cosmic-text, smol_str
+rust-version.workspace = true
 
 [dependencies]
 fit2srt-core = { path = "../lib" }

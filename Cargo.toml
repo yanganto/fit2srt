@@ -5,5 +5,8 @@ members = [
     "gui"
  ]
 
+[workspace.package]
+rust-version = "1.89.0"  # due to cosmic-text, smol_str
+
 [workspace.dependencies]
 chrono = "0.4.43"

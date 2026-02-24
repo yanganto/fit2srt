@@ -2,7 +2,7 @@
 name = "fit2srt-cli"
 version = "0.3.0"
 edition = "2021"
-rust-version = "1.88.0"
+rust-version.workspace = true
 
 [dependencies]
 fit2srt-core = { path = "../lib" }

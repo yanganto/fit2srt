@@ -1,7 +1,6 @@
-{ self, pkgs, crane, cliRustMsrv, guiRustMsrv }:
+{ self, pkgs, crane, rustMsrv }:
 let
-  cliCraneLib = (crane.mkLib pkgs).overrideToolchain (p: cliRustMsrv);
-  guiCraneLib = (crane.mkLib pkgs).overrideToolchain (p: guiRustMsrv);
+  craneLib = (crane.mkLib pkgs).overrideToolchain (p: rustMsrv);
   src = self;
   doCheck = false;
 in
@@ -12,11 +11,11 @@ rec {
     cargoTomlConfig = builtins.fromTOML (builtins.readFile cargoToml);
     version = cargoTomlConfig.package.version;
   in
-  cliCraneLib.buildPackage {
+  craneLib.buildPackage {
     inherit version src cargoToml doCheck;
     name = "fit2srt";
     cargoExtraArgs = "--bin fit2srt-cli";
-    cargoArtifacts = cliCraneLib.buildDepsOnly {
+    cargoArtifacts = craneLib.buildDepsOnly {
       inherit version src cargoToml doCheck;
       name = "fit2srt-cli";
       cargoExtraArgs  = "--bin fit2srt-cli";
@@ -37,11 +36,11 @@ rec {
       zenity
     ];
   in
-  guiCraneLib.buildPackage {
+  craneLib.buildPackage {
     inherit version src cargoToml buildInputs nativeBuildInputs doCheck;
     name = "fit2srt";
     cargoExtraArgs = "--bin fit2srt-gui";
-    cargoArtifacts = guiCraneLib.buildDepsOnly {
+    cargoArtifacts = craneLib.buildDepsOnly {
       inherit version src cargoToml buildInputs nativeBuildInputs doCheck;
       name = "fit2srt-gui";
       cargoExtraArgs  = "--bin fit2srt-gui";
