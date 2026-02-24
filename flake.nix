@@ -18,12 +18,14 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-        cargoToml = (builtins.fromTOML (builtins.readFile ./cli/Cargo.toml));
+        cliCargoToml = (builtins.fromTOML (builtins.readFile ./cli/Cargo.toml));
+        guiCargoToml = (builtins.fromTOML (builtins.readFile ./gui/Cargo.toml));
       in
       {
         packages = (import ./nix/packages.nix { 
           inherit self pkgs crane;
-          specificRust = pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal;
+          cliRustMsrv = pkgs.rust-bin.stable.${cliCargoToml.package.rust-version}.minimal;
+          guiRustMsrv = pkgs.rust-bin.stable.${guiCargoToml.package.rust-version}.minimal;
         });
         devShells = 
         let 
@@ -42,7 +44,7 @@
           default = dev;
           dev = pkgs.mkShell ({
             buildInputs = buildInputs ++ [
-              pkgs.rust-bin.stable.${cargoToml.package.rust-version}.minimal 
+              pkgs.rust-bin.stable.${guiCargoToml.package.rust-version}.minimal 
             ];
             inherit nativeBuildInputs;
             # ICED needed additional LD_LIBRARY_PATH
@@ -52,7 +54,7 @@
           });
           ci = pkgs.mkShell ({
             buildInputs = buildInputs ++ [
-              pkgs.rust-bin.stable.${cargoToml.package.rust-version}.default 
+              pkgs.rust-bin.stable.${guiCargoToml.package.rust-version}.default 
             ];
             inherit nativeBuildInputs;
           });
