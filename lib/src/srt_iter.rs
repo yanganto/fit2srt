@@ -180,6 +180,7 @@ impl SrtGenerator {
                             }
                         }
                     }
+                    #[allow(clippy::unnecessary_unwrap)]
                     if timestamp.is_some() && has_depth {
                         if let Some(start_time) = start_time {
                             let rounded_value = (value / self.tick).round() * self.tick;

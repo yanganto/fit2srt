@@ -114,7 +114,7 @@ impl App {
         srt_path
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_, Message> {
         let controls = row![]
             .push_maybe(self.screen.previous().is_some().then(|| {
                 padded_button("Back")
@@ -161,7 +161,7 @@ impl App {
         }
     }
 
-    fn welcome(&self) -> Column<Message> {
+    fn welcome(&self) -> Column<'_, Message> {
         Self::container("Welcome!")
             .push(column![
                 text("This is a simple tool for you to make your diving log as video subtitles."),
@@ -175,7 +175,7 @@ impl App {
             ])
     }
 
-    fn inputs(&self) -> Column<Message> {
+    fn inputs(&self) -> Column<'_, Message> {
         Self::container("Setup inputs")
             .push(text(if let Some(f) = &self.fitfile {
                 format!("1. Fit file loaded: {}", f.display())
@@ -203,7 +203,7 @@ impl App {
             )
     }
 
-    fn end(&self) -> Column<Message> {
+    fn end(&self) -> Column<'_, Message> {
         Self::container("All Done!")
         .push(text(format!("The .srt file is created: {}", self.srt_file().unwrap().display())))
         .push("You can upload .srt to youtube or use it in video editor.")
@@ -217,7 +217,7 @@ impl App {
             .center_x(Fill)
         )
     }
-    fn crypto_donate(&self) -> Column<Message> {
+    fn crypto_donate(&self) -> Column<'_, Message> {
         Self::container("Help us")
             .push("If you want to donate with crypto.")
             .push("Please help us with Bitcoin.")
