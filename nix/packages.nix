@@ -1,6 +1,6 @@
-{ self, pkgs, crane, specificRust }:
+{ self, pkgs, crane, rustMsrv }:
 let
-  craneLib = (crane.mkLib pkgs).overrideToolchain (p: specificRust);
+  craneLib = (crane.mkLib pkgs).overrideToolchain (p: rustMsrv);
   src = self;
   doCheck = false;
 in
