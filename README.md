@@ -27,6 +27,10 @@ There are subtitles with realtime depth in following dive video.  The subtitles 
 
   <a href="https://www.youtube.com/watch?v=gxGQsMdCE8Q"><img src="https://github.com/yanganto/fit2srt/raw/main/assets/demo2.png" width="300"></a>
 
+### Web Version
+We also provide web service let you easy to try.
+https://fit2srt.diver.best/
+
 ### Donate and Support
 #### Take Diving Course with Me
 If you are happy to support this project, and want to learn how to go to ocean in Taiwan.
