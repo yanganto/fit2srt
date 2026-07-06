@@ -10,5 +10,5 @@ chrono.workspace = true
 clap = { version =  "4.6.1", features= ["derive"] }
 
 [dev-dependencies]
-test_bin = "0.5.0"
+test_bin = "0.6.1"
 test-with = { version = "*", default-features = false, features = ["timezone"] }
